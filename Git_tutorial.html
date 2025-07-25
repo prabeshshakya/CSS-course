@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive GitHub & SSH Setup Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A task-oriented SPA. It starts with the universal "Create Account" step. Then, a prominent OS selector (macOS/Windows) dynamically displays only the relevant SSH setup guide. The selected guide's steps are presented in an accordion, allowing users to focus on one step at a time. This structure is chosen to minimize cognitive load and guide the user through a complex process by tailoring the content to their specific context and breaking it into manageable chunks. -->
+    <!-- Visualization & Content Choices: Report Info: Entire tutorial -> Goal: Guide -> Presentation: Interactive SPA -> Interaction: OS selection buttons toggle visibility of instruction sections. Justification: Tailors content to user's need. | Report Info: OS-specific steps -> Goal: Organize/Instruct -> Presentation: Accordion for each step -> Interaction: Click header to expand/collapse. Justification: Breaks down the process, prevents overwhelm. | Report Info: Code snippets -> Goal: Enable Action -> Presentation: Styled code blocks -> Interaction: "Copy" button for each snippet. Justification: Prevents user error and frustration. All implemented with HTML/Tailwind/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7;
+            color: #383838;
+        }
+        .step-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .step-content.open {
+            max-height: 1000px; /* Adjust as needed */
+        }
+        .os-btn.active {
+            background-color: #A47F6A;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+        .os-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .step-header.active {
+            background-color: #EFEAE5;
+        }
+        .code-block {
+            background-color: #EFEAE5;
+            border-left: 3px solid #A47F6A;
+        }
+        .copy-btn {
+            background-color: #A47F6A;
+            color: #FFFFFF;
+        }
+         .copy-btn:hover {
+            background-color: #8e6d5a;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto max-w-4xl px-4 py-8 md:py-16">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#A47F6A] mb-2">GitHub Setup Guide</h1>
+            <p class="text-lg text-gray-600">Your interactive walkthrough for creating an account and setting up SSH.</p>
+        </header>
+
+        <main>
+            <!-- Part 1: Create GitHub Account -->
+            <section id="create-account" class="mb-12">
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-4">
+                        <div class="flex-shrink-0 bg-[#A47F6A] text-white rounded-full h-8 w-8 flex items-center justify-center font-bold text-lg">1</div>
+                        <h2 class="ml-4 text-2xl font-bold">Create Your GitHub Account</h2>
+                    </div>
+                    <p class="mb-6 text-gray-700">This is the first step for everyone. If you already have an account, you can skip to the next section. Follow these steps to get started on GitHub.</p>
+                    <ol class="list-decimal list-inside space-y-4 text-gray-800">
+                        <li><strong>Visit GitHub:</strong> Open your browser and go to <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="text-[#A47F6A] font-medium hover:underline">github.com</a>.</li>
+                        <li><strong>Sign Up:</strong> Find and click the "Sign up" button.</li>
+                        <li><strong>Enter Details:</strong> Provide a valid email, a strong password, and choose a unique username.</li>
+                        <li><strong>Verify Email:</strong> Check your inbox for a verification link from GitHub and click it to activate your account.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Part 2: OS Selector and SSH Guides -->
+            <section id="ssh-setup">
+                 <div class="bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-200">
+                    <div class="flex items-center mb-4">
+                        <div class="flex-shrink-0 bg-[#A47F6A] text-white rounded-full h-8 w-8 flex items-center justify-center font-bold text-lg">2</div>
+                        <h2 class="ml-4 text-2xl font-bold">Set Up SSH For Secure Access</h2>
+                    </div>
+                    <p class="mb-6 text-gray-700">Using SSH is the recommended way to securely connect to GitHub. Select your operating system below to get the correct instructions.</p>
+
+                    <!-- OS Selector Buttons -->
+                    <div class="flex justify-center gap-4 mb-8">
+                        <button id="macos-btn" class="os-btn w-full md:w-48 py-3 px-6 rounded-lg text-lg font-medium border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A47F6A] bg-gray-200">
+                            macOS
+                        </button>
+                        <button id="windows-btn" class="os-btn w-full md:w-48 py-3 px-6 rounded-lg text-lg font-medium border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A47F6A] bg-gray-200">
+                            Windows
+                        </button>
+                    </div>
+
+                    <!-- macOS Guide -->
+                    <div id="macos-guide" class="hidden">
+                        <div id="macos-accordion" class="space-y-3">
+                            <!-- Step Content is dynamically generated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Windows Guide -->
+                    <div id="windows-guide" class="hidden">
+                        <div id="windows-accordion" class="space-y-3">
+                            <!-- Step Content is dynamically generated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-16 text-gray-500">
+            <p>&copy; 2025. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const macosBtn = document.getElementById('macos-btn');
+            const windowsBtn = document.getElementById('windows-btn');
+            const macosGuide = document.getElementById('macos-guide');
+            const windowsGuide = document.getElementById('windows-guide');
+            const macosAccordion = document.getElementById('macos-accordion');
+            const windowsAccordion = document.getElementById('windows-accordion');
+
+            const macosSteps = [
+                {
+                    title: "Step 1: Check for Existing SSH Keys",
+                    content: `
+                        <p class="mb-4">First, let's see if you already have an SSH key on your system.</p>
+                        <ol class="list-decimal list-inside space-y-2 mb-4">
+                            <li>Open the <strong>Terminal</strong> app (you can find it in <code>Applications/Utilities</code> or search with Spotlight).</li>
+                            <li>Run the following command:</li>
+                        </ol>
+                        ${createCodeBlock('ls -al ~/.ssh')}
+                        <p class="mt-4">If you see files named <code>id_rsa.pub</code>, <code>id_ecdsa.pub</code>, or <code>id_ed25519.pub</code>, you already have a key. You can skip to Step 3.</p>
+                    `
+                },
+                {
+                    title: "Step 2: Generate a New SSH Key",
+                    content: `
+                        <p class="mb-4">If you don't have a key, you'll need to create one. We recommend the modern and secure ED25519 algorithm.</p>
+                        <ol class="list-decimal list-inside space-y-2 mb-4">
+                            <li>In Terminal, run the command below, replacing the email with your own GitHub email address.</li>
+                        </ol>
+                        ${createCodeBlock('ssh-keygen -t ed25519 -C "your_email@example.com"')}
+                        <ol class="list-decimal list-inside space-y-2 mt-4">
+                            <li>When prompted for a file location, press <strong>Enter</strong> to accept the default.</li>
+                            <li>You'll be asked for a passphrase. This is an optional but highly recommended password for your key. Enter a strong passphrase, then enter it again to confirm.</li>
+                        </ol>
+                    `
+                },
+                {
+                    title: "Step 3: Add Your SSH Key to the ssh-agent",
+                    content: `
+                        <p class="mb-4">The ssh-agent is a background program that handles your keys and passphrases.</p>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li>Start the ssh-agent in the background:</li>
+                            ${createCodeBlock('eval "$(ssh-agent -s)"')}
+                            <li>Modify your SSH config file to automatically load keys. Create the file if it doesn't exist (<code>touch ~/.ssh/config</code>), then add the following content:</li>
+                            ${createCodeBlock(`Host *\n  AddKeysToAgent yes\n  UseKeychain yes\n  IdentityFile ~/.ssh/id_ed25519`)}
+                            <li>Add your new key to the agent. You'll be prompted for your passphrase here.</li>
+                            ${createCodeBlock('ssh-add -K ~/.ssh/id_ed25519')}
+                        </ol>
+                    `
+                },
+                {
+                    title: "Step 4: Add the SSH Key to GitHub",
+                    content: `
+                        <p class="mb-4">Now, you need to tell GitHub about your public key.</p>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li>Copy your public key to your clipboard:</li>
+                            ${createCodeBlock('pbcopy < ~/.ssh/id_ed25519.pub')}
+                            <li>Go to your <a href="https://github.com/settings/keys" target="_blank" rel="noopener noreferrer" class="text-[#A47F6A] font-medium hover:underline">GitHub SSH and GPG keys settings</a>.</li>
+                            <li>Click <strong>New SSH key</strong>.</li>
+                            <li>Give it a descriptive <strong>Title</strong> (e.g., "MacBook Pro").</li>
+                            <li>Paste your key into the <strong>Key</strong> field and click <strong>Add SSH key</strong>.</li>
+                        </ol>
+                    `
+                },
+                {
+                    title: "Step 5: Test Your Connection",
+                    content: `
+                        <p class="mb-4">Finally, let's verify that everything is working correctly.</p>
+                        <ol class="list-decimal list-inside space-y-2 mb-4">
+                            <li>In Terminal, run this command:</li>
+                        </ol>
+                        ${createCodeBlock('ssh -T git@github.com')}
+                        <p class="mt-4">You may see a warning about the authenticity of the host. Type <code>yes</code> and press Enter. If you see a message like "Hi username! You've successfully authenticated...", you're all set!</p>
+                    `
+                }
+            ];
+
+            const windowsSteps = [
+                 {
+                    title: "Step 1: Check for Existing SSH Keys",
+                    content: `
+                        <p class="mb-4">First, let's see if you already have an SSH key on your system.</p>
+                        <ol class="list-decimal list-inside space-y-2 mb-4">
+                            <li>Open <strong>PowerShell</strong> or <strong>Git Bash</strong> (recommended if you have Git for Windows installed).</li>
+                            <li>Run the following command:</li>
+                        </ol>
+                        ${createCodeBlock('ls -al ~/.ssh')}
+                        <p class="mt-4">If you see files named <code>id_rsa.pub</code>, <code>id_ecdsa.pub</code>, or <code>id_ed25519.pub</code>, you already have a key. You can skip to Step 3.</p>
+                    `
+                },
+                {
+                    title: "Step 2: Generate a New SSH Key",
+                    content: `
+                        <p class="mb-4">If you don't have a key, you'll need to create one. We recommend the modern and secure ED25519 algorithm.</p>
+                        <ol class="list-decimal list-inside space-y-2 mb-4">
+                            <li>In your terminal, run the command below, replacing the email with your own GitHub email address.</li>
+                        </ol>
+                        ${createCodeBlock('ssh-keygen -t ed25519 -C "your_email@example.com"')}
+                        <ol class="list-decimal list-inside space-y-2 mt-4">
+                            <li>When prompted for a file location, press <strong>Enter</strong> to accept the default.</li>
+                            <li>You'll be asked for a passphrase. This is an optional but highly recommended password for your key. Enter a strong passphrase, then enter it again to confirm.</li>
+                        </ol>
+                    `
+                },
+                {
+                    title: "Step 3: Add Your SSH Key to the ssh-agent",
+                    content: `
+                        <p class="mb-4">The ssh-agent is a background program that handles your keys and passphrases.</p>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li>Start the ssh-agent in the background:</li>
+                            ${createCodeBlock('eval $(ssh-agent -s)')}
+                            <li>Add your new key to the agent. You'll be prompted for your passphrase here.</li>
+                            ${createCodeBlock('ssh-add ~/.ssh/id_ed25519')}
+                        </ol>
+                    `
+                },
+                {
+                    title: "Step 4: Add the SSH Key to GitHub",
+                    content: `
+                        <p class="mb-4">Now, you need to tell GitHub about your public key.</p>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li>Copy your public key to your clipboard. In <strong>PowerShell</strong>, use:</li>
+                            ${createCodeBlock('Get-Content ~/.ssh/id_ed25519.pub | Set-Clipboard')}
+                            <p>In <strong>Git Bash</strong>, use:</p>
+                            ${createCodeBlock('clip < ~/.ssh/id_ed25519.pub')}
+                            <li>Go to your <a href="https://github.com/settings/keys" target="_blank" rel="noopener noreferrer" class="text-[#A47F6A] font-medium hover:underline">GitHub SSH and GPG keys settings</a>.</li>
+                            <li>Click <strong>New SSH key</strong>.</li>
+                            <li>Give it a descriptive <strong>Title</strong> (e.g., "Windows Desktop").</li>
+                            <li>Paste your key into the <strong>Key</strong> field and click <strong>Add SSH key</strong>.</li>
+                        </ol>
+                    `
+                },
+                {
+                    title: "Step 5: Test Your Connection",
+                    content: `
+                        <p class="mb-4">Finally, let's verify that everything is working correctly.</p>
+                        <ol class="list-decimal list-inside space-y-2 mb-4">
+                            <li>In your terminal, run this command:</li>
+                        </ol>
+                        ${createCodeBlock('ssh -T git@github.com')}
+                        <p class="mt-4">You may see a warning about the authenticity of the host. Type <code>yes</code> and press Enter. If you see a message like "Hi username! You've successfully authenticated...", you're all set!</p>
+                    `
+                }
+            ];
+
+            function createCodeBlock(code) {
+                const randomId = `code-${Math.random().toString(36).substr(2, 9)}`;
+                return `
+                    <div class="relative code-block rounded-md my-4">
+                        <pre class="p-4 pr-16 text-sm text-gray-800 rounded-md overflow-x-auto"><code id="${randomId}">${code}</code></pre>
+                        <button class="copy-btn absolute top-2 right-2 px-3 py-1 text-xs font-semibold rounded-md" data-clipboard-target="#${randomId}">Copy</button>
+                    </div>
+                `;
+            }
+
+            function createAccordion(steps) {
+                return steps.map((step, index) => `
+                    <div class="border border-gray-200 rounded-lg overflow-hidden">
+                        <button class="step-header w-full text-left p-4 bg-gray-50 hover:bg-gray-100 focus:outline-none flex justify-between items-center transition-colors">
+                            <span class="font-semibold text-lg">${step.title}</span>
+                            <svg class="w-6 h-6 transform transition-transform chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="step-content bg-white">
+                            <div class="p-6 border-t border-gray-200">${step.content}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            macosAccordion.innerHTML = createAccordion(macosSteps);
+            windowsAccordion.innerHTML = createAccordion(windowsSteps);
+
+            function handleOSSelection(selectedOS) {
+                if (selectedOS === 'macos') {
+                    macosBtn.classList.add('active');
+                    windowsBtn.classList.remove('active');
+                    macosGuide.classList.remove('hidden');
+                    windowsGuide.classList.add('hidden');
+                } else {
+                    windowsBtn.classList.add('active');
+                    macosBtn.classList.remove('active');
+                    windowsGuide.classList.remove('hidden');
+                    macosGuide.classList.add('hidden');
+                }
+            }
+            
+            macosBtn.addEventListener('click', () => handleOSSelection('macos'));
+            windowsBtn.addEventListener('click', () => handleOSSelection('windows'));
+
+            function setupAccordion(containerId) {
+                const accordionContainer = document.getElementById(containerId);
+                accordionContainer.addEventListener('click', function(e) {
+                    const header = e.target.closest('.step-header');
+                    if (!header) return;
+
+                    const content = header.nextElementSibling;
+                    const chevron = header.querySelector('.chevron');
+
+                    // Close all other open items
+                    const allContent = accordionContainer.querySelectorAll('.step-content');
+                    const allHeaders = accordionContainer.querySelectorAll('.step-header');
+                    const allChevrons = accordionContainer.querySelectorAll('.chevron');
+
+                    allContent.forEach((item, index) => {
+                        if (item !== content && item.classList.contains('open')) {
+                            item.classList.remove('open');
+                            allHeaders[index].classList.remove('active');
+                            allChevrons[index].classList.remove('rotate-180');
+                        }
+                    });
+
+                    // Toggle the clicked item
+                    content.classList.toggle('open');
+                    header.classList.toggle('active');
+                    chevron.classList.toggle('rotate-180');
+                });
+            }
+
+            setupAccordion('macos-accordion');
+            setupAccordion('windows-accordion');
+
+            document.body.addEventListener('click', function(e) {
+                const button = e.target.closest('.copy-btn');
+                if (!button) return;
+
+                const targetSelector = button.getAttribute('data-clipboard-target');
+                const codeElement = document.querySelector(targetSelector);
+                
+                if (codeElement) {
+                    navigator.clipboard.writeText(codeElement.innerText).then(() => {
+                        const originalText = button.innerText;
+                        button.innerText = 'Copied!';
+                        setTimeout(() => {
+                            button.innerText = originalText;
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+                }
+            });
+            
+            // Default to macOS view
+            handleOSSelection('macos');
+        });
+    </script>
+</body>
+</html>
